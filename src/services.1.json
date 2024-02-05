@@ -1,0 +1,132 @@
+[
+  {
+    "id": "IdN5iYX",
+    "name": "Microsoft Bot Framework Composer",
+    "description": "Microsoft Bot Framework Composer Service",
+    "category": "web app",
+    "port": 3010,
+    "host": "127.0.0.1",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/work/olas/BotFramework-Composer",
+    "type": "docker-compose"
+  },
+
+  {
+    "id": "jd73Wq_",
+    "name": "Flowise",
+    "description": "Open source UI visual tool to build your customized LLM orchestration flow & AI agents",
+    "category": "web app",
+    "port": 3011,
+    "host": "127.0.0.1",
+    "secure": false,
+    "nodeVersion": "18.19.0",
+    "command": "flowise start",
+    "type": "npx",
+    "install": ["nvm install 18.19.0", "npm install -g flowise"]
+  },
+
+  {
+    "id": "deIw78a",
+    "name": "AutoGen Studio",
+    "description": "Open source UI visual tool to build your customized LLM orchestration flow & AI agents",
+    "category": "web app",
+    "port": 3012,
+    "host": "127.0.0.1",
+    "secure": false,
+    "command": "autogenstudio ui --port {{ port }}",
+    "type": "python",
+    "virtual": "venv",
+    "install": ["pip install autogenstudio"],
+    "envName": "autogenstudio"
+  },
+
+  {
+    "id": "iqooei2",
+    "name": "Chatbot Ollama",
+    "description": "A chat bot UI for Ollama",
+    "category": "web app",
+    "port": 3013,
+    "host": "127.0.0.1",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/ai/chatbot-ollama",
+    "type": "docker-compose"
+  },
+
+  {
+    "id": "jhdaaz9",
+    "name": "Ollama Service",
+    "description": "A chat bot UI for Ollama",
+    "category": "http server",
+    "port": 11434,
+    "host": "127.0.0.1",
+    "secure": false,
+    "serviceName": "ollama",
+    "type": "systemctl"
+  },
+
+  {
+    "id": "__qwY62",
+    "name": "Postgres Database",
+    "description": "Postgres Databasea",
+    "category": "database",
+    "port": 7982,
+    "host": "0.0.0.0",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/ai/services/services/postgres",
+    "type": "docker-compose",
+    "vendor": "postgres"
+  },
+
+  {
+    "id": "jfuejwk",
+    "name": "Postgres Vector Store",
+    "description": "Postgres Vector Store",
+    "category": "database",
+    "port": 7985,
+    "host": "0.0.0.0",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/ai/services/services/pgvector",
+    "type": "docker-compose",
+    "vendor": "postgres"
+  },
+
+  {
+    "id": "_kdi2qA",
+    "name": "ChromaDB",
+    "description": "ChromaDB",
+    "category": "http server",
+    "port": 3014,
+    "host": "0.0.0.0",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/ai/services/services/chromadb",
+    "type": "docker-compose"
+  },
+
+  {
+    "id": "qARSRSe",
+    "name": "Text Generation Web UI",
+    "description": "Text Generation Web UI",
+    "category": "web app",
+    "port": 7860,
+    "host": "localhost",
+    "secure": false,
+    "cwd": "/home/pierrot/Dev/work/ole/text-generation-webui",
+    "type": "command",
+    "command": "start_linux.sh"
+  },
+
+  {
+    "id": "qaaqe56",
+    "name": "Langflow",
+    "description": "Langflow",
+    "category": "web app",
+    "port": 2015,
+    "host": "localhost",
+    "secure": false,
+    "type": "python",
+    "command": "langflow run --port {{ port }}",
+    "install": "pip install langflow langflow[local]",
+    "virtual": "venv",
+    "envName": "langflow"
+  }
+]
