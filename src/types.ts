@@ -68,6 +68,11 @@ export interface Service {
   };
   handler: ServiceHandler;
   options: Record<string, any>;
+  category: ServiceCategory;
+}
+
+export interface ServiceCategory {
+  type: string;
 }
 
 export interface Live {

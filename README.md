@@ -6,8 +6,14 @@ flowice enables you to manage services on your local machines.
 # Install
 
 ```bash
-npm install -g flowice
-npx flowice start
+npm install flowice
+npm run build
+```
+
+# Run
+
+```bash
+npm start
 ```
 
 # Usage

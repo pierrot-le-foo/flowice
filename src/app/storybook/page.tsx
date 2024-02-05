@@ -48,7 +48,7 @@ export default function Storybook() {
         {name === "text" && (
           <TextInput input={{}} value={value} onChange={setValue} />
         )}
-        {name === "directoryName" && <Directory path={value} />}
+        {name === "directoryName" && <Directory path={value} onClick={() => {}} />}
         {name === "directory" && (
           <DirectoryInput input={{}} value={value} onChange={setValue} />
         )}

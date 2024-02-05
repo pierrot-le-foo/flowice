@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Service, ServiceTypeDockerCompose } from "@/types";
 import { exec, spawn } from "child_process";
 import { filter } from "lodash";

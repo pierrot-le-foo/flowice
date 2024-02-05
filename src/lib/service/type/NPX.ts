@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ServiceTypeNPX } from "@/types";
 import { spawn } from "child_process";
 

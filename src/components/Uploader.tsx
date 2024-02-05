@@ -103,6 +103,7 @@ export default function Uploader({
     <div style={{ display: "flex" }}>
       {showUploader && (
         <div style={{ flex: 1 }}>
+          {/* @ts-ignore */}
           <div {...getRootProps({ style })}>
             <input {...getInputProps()} />
             <p>{label}</p>

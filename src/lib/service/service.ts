@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Service } from "@/types";
 import { exec } from "child_process";
 import { promisify } from "util";

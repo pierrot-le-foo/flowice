@@ -391,7 +391,7 @@ export default function AddDialog() {
           <Stack spacing={2} pt={1}>
             <CategoryPicker
               onChange={(category) => {
-                setCategory(category.key);
+                setCategory(category!.key);
                 setIsSteppable((ss) =>
                   ss.map((s, i) => {
                     if (i === 4) {

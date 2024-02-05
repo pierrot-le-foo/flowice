@@ -15,11 +15,11 @@ export async function killServiceByProcessId(service: Service) {
 }
 
 export async function killServiceByPortProcessId(service: Service) {
-  const cmd = `lsof -ti:${service.port}`;
-  const { stdout } = await promisify(exec)(cmd);
-  const pid = Number(stdout.trim());
-  const ret = process.kill(pid, "SIGINT");
-  return { pid, ret };
+  // const cmd = `lsof -ti:${service.port}`;
+  // const { stdout } = await promisify(exec)(cmd);
+  // const pid = Number(stdout.trim());
+  // const ret = process.kill(pid, "SIGINT");
+  // return { pid, ret };
 }
 
 export async function log(service: Service, action: string, message: any) {

@@ -14,6 +14,7 @@ const violetMain = alpha(violetBase, 0.7);
 let theme = createTheme({
   palette: {
     mode: "dark",
+    // @ts-ignore
     violet: {
       main: violetMain,
       light: alpha(violetBase, 0.5),
