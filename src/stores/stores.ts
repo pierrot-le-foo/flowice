@@ -15,6 +15,8 @@ export const useServices = createListStore<Service>();
 
 export const useSelectedServiceId = createStringStore();
 
+export const useSelectedLogServiceId = createStringStore();
+
 export const useSearch = createStringStore();
 
 export const useFilterByStatus = createListStore<"Down" | "Up" | "Paused">([

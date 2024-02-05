@@ -16,6 +16,7 @@ import {
   useFilterByStatus,
   useFilterByType,
   useHandlers,
+  useSelectedLogServiceId,
   useSelectedServiceId,
 } from "@/stores/stores";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -49,6 +50,7 @@ export default function Service({ service }: ServiceProps) {
   const handlers = useHandlers((state) => state.list);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const setLogs = useSelectedLogServiceId(state => state.replace)
 
   const getStatus = useCallback(async () => {
     if (!deleted) {
@@ -184,7 +186,7 @@ export default function Service({ service }: ServiceProps) {
             </IconButton>
           )}
 
-          <IconButton color="info">
+          <IconButton color="info" onClick={() => setLogs(service.id)}>
             <ArticleIcon />
           </IconButton>
 

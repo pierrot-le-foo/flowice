@@ -12,6 +12,7 @@ export default function Search() {
         placeholder="Enter search term"
         value={search.value}
         onChange={(e) => search.replace(e.target.value)}
+        name="flowice-search"
       />
     </Stack>
   );

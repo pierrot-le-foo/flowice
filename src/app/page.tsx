@@ -11,8 +11,8 @@ import EmptyServices from "@/components/EmptyServices";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 import Service from "@/components/Service";
-import ServiceDialog from "@/components/ServiceDialog";
 import Typography from "@mui/material/Typography";
+import LogsDialog from "@/components/LogsDialog";
 
 export default function Home() {
   const liveServices = useServices((state) => state.list);
@@ -71,7 +71,7 @@ export default function Home() {
 
       <AddDialog />
 
-      <ServiceDialog />
+      <LogsDialog />
 
       {services.length === 0 && loading && (
         <Stack sx={{ flex: 1 }} justifyContent="center" alignItems="center">
