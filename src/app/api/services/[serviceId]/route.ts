@@ -1,4 +1,4 @@
-import { readFile, unlink } from "fs/promises";
+import { readFile, unlink, writeFile } from "fs/promises";
 import path from "path";
 import * as shared from "@/shared";
 import { NextResponse } from "next/server";
@@ -21,4 +21,15 @@ export async function DELETE(_request: Request, options: Options) {
     await unlink(path.join(DIR, `${id}.json`));
     return NextResponse.json({ deleted: true });
   }
+}
+
+export async function PUT(request: Request, options: Options) {
+  const id = options.params.serviceId;
+  const service = await request.json();
+  console.log(service);
+  await writeFile(
+    path.join(process.env.HOME!, ".flowice/services", `${id}.json`),
+    JSON.stringify(service)
+  );
+  return NextResponse.json({ updated: true });
 }

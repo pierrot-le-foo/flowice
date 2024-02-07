@@ -39,5 +39,5 @@ export function getStatusColor(status: boolean | null) {
   if (status === false) {
     return "error";
   }
-  return "info";
+  return "inherit";
 }

@@ -22,7 +22,7 @@ export default function Home() {
   const setHandlers = useHandlers((state) => state.replace);
 
   const getHandlers = async () => {
-    const res = await fetch("/api/marketplace/handlers");
+    const res = await fetch("/api/handlers");
     const data = await res.json();
     setHandlers(data);
   };

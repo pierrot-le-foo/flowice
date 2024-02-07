@@ -1,6 +1,5 @@
 import { getStatusColor } from "@/config";
 import { Service as IService, ServiceAction } from "@/types";
-import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -11,28 +10,17 @@ import StopIcon from "@mui/icons-material/Stop";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
-import {
-  useFilterByStatus,
-  useFilterByType,
-  useHandlers,
-  useSelectedLogServiceId,
-  useSelectedServiceId,
-} from "@/stores/stores";
+import { useFilterByStatus, useFilterByType, useSelectedLogServiceId } from "@/stores/stores";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Menu from "@mui/material/Menu";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import CloseIcon from "@mui/icons-material/Close";
 import Chip from "@mui/material/Chip";
-import semver from "semver";
-import { find } from "lodash";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import HideSourceIcon from "@mui/icons-material/HideSource";
+import ServiceMenu from "./ServiceMenu";
+import WifiIcon from '@mui/icons-material/Wifi';
+import WifiOffIcon from '@mui/icons-material/WifiOff';
+import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
 
 export interface ServiceProps {
   service: IService;
@@ -47,17 +35,22 @@ export default function Service({ service }: ServiceProps) {
   const selectedFilters = useFilterByStatus((state) => state.list);
   const selectedTypes = useFilterByType((state) => state.list);
   const [openMenu, setOpenMenu] = useState(false);
-  const handlers = useHandlers((state) => state.list);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
   const [deleted, setDeleted] = useState(false);
-  const setLogs = useSelectedLogServiceId(state => state.replace)
+  const setLogs = useSelectedLogServiceId((state) => state.replace);
 
   const getStatus = useCallback(async () => {
     if (!deleted) {
       const response = await fetch(`/api/services/${service.id}/status`);
       const data = await response.json();
-      setStatus(data.status);
-      if (status !== data.status) {
+      let nextStatus = false;
+      if (typeof data.status === "boolean") {
+        nextStatus = data.status;
+      } else if (Array.isArray(data.status)) {
+        nextStatus = data.status[0];
+      }
+      setStatus(nextStatus);
+      if (status !== nextStatus) {
         setStarting(false);
         setStopping(false);
       }
@@ -95,17 +88,6 @@ export default function Service({ service }: ServiceProps) {
     };
   }, [status, deleted]);
 
-  const onDelete = async () => {
-    setShowConfirmDelete(false);
-    const res = await fetch(`/api/services/${service.id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
-    if (data.deleted) {
-      setDeleted(true);
-    }
-  };
-
   const ref = useRef<any>();
 
   const statusString = status === true ? "Up" : "Down";
@@ -126,23 +108,41 @@ export default function Service({ service }: ServiceProps) {
     <>
       <TableRow key={service.id}>
         <TableCell>
-          <Avatar src={service.image} sx={{ background: "#fff" }} />
+          <Avatar src={service.image || service.handler.image} />
         </TableCell>
 
         <TableCell>
-          {service.handler.name} <Chip label={`v${service.handler.version}`} />
-        </TableCell>
-        <TableCell>{service.category.type}</TableCell>
-
-        <TableCell>
-          <Alert
+          {/* <Alert
             severity={getStatusColor(status)}
             sx={{ fontWeight: "bold", color: "white" }}
             variant="filled"
           >
             {service.name}
-          </Alert>
+          </Alert> */}
+          <Button
+            fullWidth
+            color={getStatusColor(status)}
+            variant="contained"
+            sx={{ justifyContent: "flex-start" }}
+            startIcon={
+              status === true ? (
+                <WifiIcon htmlColor="white" />
+              ) : status === false ? (
+                <WifiOffIcon htmlColor="white" />
+              ) : (
+                <SignalWifiStatusbarNullIcon htmlColor="white" />
+              )
+            }
+          >
+            {service.name}
+          </Button>
         </TableCell>
+
+        <TableCell>
+          {service.handler.name} <Chip label={`v${service.handler.version}`} />
+        </TableCell>
+
+        <TableCell>{service.category.label}</TableCell>
 
         <TableCell align="right">
           {status === false && (
@@ -200,51 +200,17 @@ export default function Service({ service }: ServiceProps) {
           </IconButton>
         </TableCell>
       </TableRow>
-      <Menu
+      <ServiceMenu
         anchorEl={ref.current}
         open={openMenu}
         onClose={() => {
           setOpenMenu(false);
         }}
-      >
-        <ListItem disablePadding>
-          <ListItemButton
-            disabled={semver.satisfies(
-              service.handler.version.toString(),
-              find(handlers, { key: service.handler.key })!.version.toString()
-            )}
-          >
-            <ListItemIcon>
-              <AutorenewIcon />
-            </ListItemIcon>
-            <ListItemText primary="Update" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            color="error"
-            onClick={() => setShowConfirmDelete(true)}
-          >
-            <ListItemIcon color="error">
-              <CloseIcon color="error" />
-            </ListItemIcon>
-            <ListItemText primary="Remove" color="error" />
-          </ListItemButton>
-        </ListItem>
-      </Menu>
-      <Dialog
-        open={showConfirmDelete}
-        onClose={() => setShowConfirmDelete(false)}
-      >
-        <DialogContent>Are you sure?</DialogContent>
-        <DialogActions>
-          <Button color="secondary" onClick={() => setShowConfirmDelete(false)}>
-            No
-          </Button>
-
-          <Button onClick={onDelete}>Yes</Button>
-        </DialogActions>
-      </Dialog>
+        service={service}
+        setDeleted={() => {
+          setDeleted(true);
+        }}
+      />
     </>
   );
 }

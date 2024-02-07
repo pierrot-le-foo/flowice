@@ -5,7 +5,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "next build && npm pub",
+    "preinstall": "mkdir -p ~/.flowice/{app,services,.services}"
   },
   "bin": {
     "start": "./bin/start.sh"
@@ -13,16 +15,20 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@flowice-handlers/systemctl": "pierrot-le-foo/flowice-handler-systemctl",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
     "@supabase/supabase-js": "^2.39.3",
     "@types/lodash": "^4.14.202",
     "@types/semver": "^7.5.6",
+    "flowice-handler-app-docker-compose": "^1.0.0",
+    "flowice-handler-docker": "^1.14.0",
+    "flowice-handler-node": "^1.36.0",
+    "flowice-handler-systemctl": "^1.2.0",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.5",
     "next": "14.1.0",
+    "octokit": "^3.1.2",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",

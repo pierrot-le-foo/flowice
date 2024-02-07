@@ -13,10 +13,10 @@ interface Payload {
   network: HandlerNetwork;
   category: string;
   categoryOptions: Record<string, any>;
-  image?: string
+  image?: string;
 }
 
-const DIR = path.join(process.cwd(), "usr/services");
+const DIR = path.join(process.env.HOME!, ".flowice/services");
 
 export async function POST(request: Request) {
   const {
@@ -45,7 +45,11 @@ export async function POST(request: Request) {
       options: categoryOptions,
     },
   };
-  const filePath = path.join(DIR, `${id}.json`);
+  const filePath = path.join(
+    process.env.HOME!,
+    ".flowice/services",
+    `${id}.json`
+  );
   await writeFile(filePath, JSON.stringify(service));
   return NextResponse.json(service);
 }
@@ -53,10 +57,13 @@ export async function POST(request: Request) {
 export async function GET() {
   const ids = await readdir(DIR);
   const services = await Promise.all(
-    ids.map(async (id) => {
-      const service = await readFile(path.join(DIR, id), "utf-8");
-      return JSON.parse(service);
-    })
+    ids
+      .filter((id) => !id.endsWith(".tmp.json"))
+      .filter((id) => id.endsWith(".json"))
+      .map(async (id) => {
+        const service = await readFile(path.join(DIR, id), "utf-8");
+        return JSON.parse(service);
+      })
   );
   return NextResponse.json(services);
 }

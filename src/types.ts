@@ -11,6 +11,14 @@ export interface ServiceHandler {
   install: ServiceInstallScript;
 }
 
+export type WrapperInputType =
+  | WrapperInputText
+  | InputList<WrapperInputText>
+  | WrapperInputDirectory
+  | InputList<WrapperInputDirectory>
+  | WrapperInputBoolean
+  | InputList<WrapperInputBoolean>;
+
 export interface ServiceInstallScript {
   type: "script";
   script: string;
@@ -21,16 +29,14 @@ export enum ServiceAction {
   START = "start",
   STOP = "stop",
   PAUSE = "pause",
+  RESTART = "restart",
 }
 
 export interface WrapperInput {
   name: string;
   description: string;
   key: string;
-  type: {
-    existing: WrapperInputText | WrapperInputDirectory;
-    new: WrapperInputText | WrapperInputDirectory;
-  };
+  type: WrapperInputType;
   required: boolean;
 }
 
@@ -47,6 +53,12 @@ export interface WrapperInputText {
     flags: string[];
   };
 }
+
+export interface WrapperInputBoolean {
+  name: "boolean";
+}
+
+export type InputList<T> = T & { list: true };
 
 export interface WrapperInputDirectory {
   name: "directory";
@@ -72,7 +84,12 @@ export interface Service {
 }
 
 export interface ServiceCategory {
-  type: string;
+  label: string;
+  key: string;
+  protocol?: string;
+  port?: string;
+  domain?: string;
+  secure?: boolean;
 }
 
 export interface Live {
@@ -84,4 +101,11 @@ export interface Live {
 export interface LiveService {
   service: Service;
   live: Live;
+}
+
+export type Installation = InstallationGitHub;
+
+export interface InstallationGitHub {
+  repository: string;
+  target: string;
 }

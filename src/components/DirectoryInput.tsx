@@ -100,8 +100,8 @@ export default function DirectoryInput({
         <TextField
           label={input.name}
           placeholder={input.description}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={directory}
+          onChange={(e) => setDirectory(e.target.value)}
           fullWidth
         />
         <Button
@@ -111,6 +111,14 @@ export default function DirectoryInput({
           }}
         >
           Change
+        </Button>
+        <Button
+          onClick={() => {
+            onChange(directory)
+          }}
+          variant="contained"
+        >
+          Accept
         </Button>
       </Stack>
 
@@ -149,7 +157,7 @@ export default function DirectoryInput({
           </Button>
           <Button
             onClick={() => {
-              onChange(directory);
+              setDirectory(directory);
               setOpen(false);
             }}
           >

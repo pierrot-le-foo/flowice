@@ -4,10 +4,12 @@ import IconButton from "@mui/material/IconButton";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Stack from "@mui/material/Stack";
 import RssFeedIcon from "@mui/icons-material/RssFeed";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Menu() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const goTo = (path: string) => () => {
     router.push(path);
@@ -15,15 +17,32 @@ export default function Menu() {
 
   return (
     <Stack p={1} spacing={2}>
-      <IconButton onClick={goTo("/marketplace")}>
+      <IconButton
+        onClick={goTo("/marketplace")}
+        color={pathname.startsWith("/marketplace") ? "warning" : "inherit"}
+      >
         <StorefrontIcon />
       </IconButton>
 
-      <IconButton onClick={goTo("/")}>
+      <IconButton
+        onClick={goTo("/")}
+        color={
+          !pathname.startsWith("/marketplace") && !pathname.startsWith("/add")
+            ? "primary"
+            : "inherit"
+        }
+      >
         <RssFeedIcon />
       </IconButton>
 
-      <IconButton>
+      <IconButton
+        onClick={goTo("/add")}
+        color={pathname.startsWith("/add") ? "success" : "inherit"}
+      >
+        <AddIcon />
+      </IconButton>
+
+      <IconButton onClick={goTo("/")}>
         <SettingsIcon />
       </IconButton>
     </Stack>

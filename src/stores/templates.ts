@@ -66,3 +66,30 @@ export const createListStore = <I>(defaultValue: I[] = []) =>
       set({ list: [...get().list, ...i] });
     },
   }));
+
+export interface StringListStore {
+  list: string[];
+  replace(list: string[]): void;
+  filter(predicate: (i: string) => boolean): void;
+  push(...i: string[]): void;
+  updateByIndex(index: number, item: string): void;
+}
+
+export const createStringListStore = (defaultValue: string[] = []) =>
+  create<StringListStore>((set, get) => ({
+    list: defaultValue,
+    replace(list) {
+      set({ list });
+    },
+    filter(predicate) {
+      set({ list: get().list.filter(predicate) });
+    },
+    push(...i) {
+      set({ list: [...get().list, ...i] });
+    },
+    updateByIndex(index, item) {
+      const nextList = [...get().list];
+      nextList[index] = item;
+      set({ list: nextList });
+    },
+  }));

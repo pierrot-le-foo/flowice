@@ -42,6 +42,9 @@ export async function POST(request: Request) {
   if (handler.source.type === "github") {
     const { stdout } = await promisify(exec)(`yarn add ${handler.source.repo}`);
     console.log(stdout);
+  } else if (handler.source.type === "npm") {
+    const { stdout } = await promisify(exec)(`yarn add ${handler.source.name}`);
+    console.log(stdout);
   }
   await writeFile(path.join(process.cwd(), 'src/shared.ts'), `export * as ${handler.key} from '${handler.source.name}'\n`, { flag: 'a+'})
   return NextResponse.json({ installed: true });

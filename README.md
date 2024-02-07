@@ -16,6 +16,8 @@ npm run build
 npm start
 ```
 
+If port 3000 is busy, you can set another port like this:
+
 # Usage
 
 You can:

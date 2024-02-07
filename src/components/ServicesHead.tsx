@@ -50,10 +50,10 @@ export default function ServicesHead() {
     <TableHead>
       <TableRow>
         <TableCell style={{ width: 60 }}></TableCell>
+        <TableCell>Service</TableCell>
         <TableCell style={{ width: 200 }}>Type</TableCell>
         <TableCell style={{ width: 150 }}>Category</TableCell>
-        <TableCell>Service</TableCell>
-        <TableCell align="right">
+        <TableCell align="right" style={{ width: 260 }}>
           <IconButton onClick={toggleSearch}>
             <SearchIcon />
           </IconButton>
