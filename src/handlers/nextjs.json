@@ -93,38 +93,6 @@
         }
       },
       {
-        "key": "bin",
-        "name": "Binary to run",
-        "description": "Binary to run",
-        "required": true,
-        "type": {
-          "name": "options",
-          "options": [
-            {
-              "key": "node",
-              "name": "node",
-              "description": "Node",
-              "default": true
-            },
-            {
-              "key": "npx",
-              "name": "npx",
-              "description": "npx"
-            },
-            {
-              "key": "npm",
-              "name": "npm",
-              "description": "npm"
-            },
-            {
-              "key": "yarn",
-              "name": "yarn",
-              "description": "yarn"
-            }
-          ]
-        }
-      },
-      {
         "key": "version",
         "name": "Version",
         "description": "NextJS version",
@@ -145,6 +113,48 @@
             }
           ]
         }
+      },
+      {
+        "key": "directory",
+        "name": "Directory",
+        "type": {
+          "name": "text",
+          "regularExpression": { "flags": [], "expression": "\\w{1,100}" },
+          "default": {
+            "command": "echo $HOME/.flowice/services/{{ general.id }}"
+          }
+        },
+        "required": false,
+        "description": "The directory where the Next app lives"
+      },
+      {
+        "key": "port",
+        "name": "Port",
+        "type": {
+          "name": "text"
+        },
+        "required": false,
+        "description": "The port (defaults to 3000)"
+      },
+      {
+        "key": "command",
+        "name": "Run command",
+        "type": {
+          "name": "options",
+          "options": [
+            {
+              "key": "start",
+              "name": "Start",
+              "default": true
+            },
+            {
+              "key": "dev",
+              "name": "dev"
+            }
+          ]
+        },
+        "required": false,
+        "description": "The command to run"
       }
     ]
   },

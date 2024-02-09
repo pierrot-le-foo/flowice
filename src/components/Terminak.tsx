@@ -1,11 +1,10 @@
-import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import IconButton from "@mui/material/IconButton";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -14,14 +13,22 @@ import List from "@mui/material/List";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import DownloadIcon from "@mui/icons-material/Download";
 import Avatar from "@mui/material/Avatar";
-import Divider from "@mui/material/Divider";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import InputAdornment from "@mui/material/InputAdornment";
 
 enum TerminalHelper {
-  CLONE_GIT_HUB,
-  DOCKER_BUILD,
-  GET_AND_EXECUTE_BASH,
+  CLONE_GIT_HUB = "Clone GitHub Repository",
+  CREATE_PYTHON_VENV = "Create Python Virtual Env",
+  DOCKER_BUILD = "Docker build",
+  GET_AND_EXECUTE_BASH = "Get and execute bash script",
+  PIP_INSTALL = "Pip Install",
+  APT_GET = "apt install",
+  NPM_INSTALL = "npm install"
+}
+
+enum TerminalType {
+  INSTALL = "install",
 }
 
 interface HelperProps {
@@ -31,142 +38,220 @@ interface HelperProps {
   save?(text: string): void;
 }
 
-function CloneGitHub({ inList, open, close, save }: HelperProps) {
+interface Props {
+  onDone(t: string): void;
+}
+
+function Render({
+  onDone,
+  Component,
+}: Props & {
+  Component: any;
+}) {
+  return <Component onDone={onDone} />;
+}
+
+function Apply({ send }: { send(): void }) {
+  return (
+    <InputAdornment position="end">
+      <IconButton color="primary" sx={{ alignSelf: "center" }} onClick={send}>
+        <CheckIcon />
+      </IconButton>
+    </InputAdornment>
+  );
+}
+
+function AvatarIcon({ src }: { src: string }) {
+  return <Avatar src={src} sx={{ width: 30, height: 30 }} />;
+}
+
+function CloneGitHubRepo({ onDone }: Props) {
   const [value, setValue] = useState("");
 
   const send = useCallback(() => {
     const url = value.startsWith("http")
       ? value
       : `https://github.com/${value}`;
-    save!(`git clone ${url} .`);
-    setValue("");
-    close!();
-  }, [close, save, value]);
+    onDone!(`git clone ${url} .`);
+  }, [onDone, value]);
 
-  if (inList) {
-    return (
-      <ListItemButton sx={{ borderRadius: 2 }} onClick={open}>
-        <ListItemIcon>
-          <GitHubIcon />
-        </ListItemIcon>
-        <ListItemText primary="Clone from GitHub" />
-      </ListItemButton>
-    );
-  }
   return (
-    <Stack>
-      <ListItem>
-        <ListItemIcon>
-          <GitHubIcon />
-        </ListItemIcon>
-        <ListItemText primary="Clone from GitHub" />
-      </ListItem>
-
-      <Stack direction="row" spacing={1}>
-        <Stack sx={{ flex: 1 }}>
-          <TextField
-            label="Repository"
-            placeholder="Enter repository path like this: owner/repo"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.code === "Enter") {
-                send();
-              }
-            }}
-          />
-        </Stack>
-        <IconButton color="primary" sx={{ alignSelf: "center" }} onClick={send}>
-          <CheckIcon />
-        </IconButton>
-        <IconButton color="warning" onClick={close}>
-          <CloseIcon />
-        </IconButton>
-      </Stack>
-    </Stack>
+    <TextField
+      label="Repository"
+      placeholder="Enter repository path like this: owner/repo"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
   );
 }
 
-function GetAndExecuteBashScript({
-  inList,
-  setSelected,
-  onEnter,
-}: HelperProps) {
-  if (inList) {
-    return (
-      <ListItemButton sx={{ borderRadius: 2 }}>
-        <ListItemIcon>
-          <DownloadIcon />
-        </ListItemIcon>
-        <ListItemText primary="Download and execute bash script" />
-      </ListItemButton>
-    );
-  }
-}
+CloneGitHubRepo.title = TerminalHelper.CLONE_GIT_HUB;
+CloneGitHubRepo.icon = <GitHubIcon />;
 
-function DockerBuild({ inList, save, open, close }: HelperProps) {
+function CreatePythonVirtualEnv({ onDone }: Props) {
   const [value, setValue] = useState("");
 
   const send = useCallback(() => {
-    save!(`docker build -t ${value} .`);
-    setValue("");
-    close!();
-  }, [close, save, value]);
+    onDone!(`python -m venv ${value}\nsource ${value}/bin/activate`);
+  }, [onDone, value]);
 
-  if (inList) {
-    return (
-      <ListItemButton sx={{ borderRadius: 2 }} onClick={open}>
-        <ListItemIcon>
-          <Avatar sx={{ width: 30, height: 30 }} src="/docker.png" />
-        </ListItemIcon>
-        <ListItemText primary="Build docker" />
-      </ListItemButton>
-    );
-  }
   return (
-    <Stack>
-      <ListItem>
-        <ListItemIcon>
-          <Avatar sx={{ width: 30, height: 30 }} src="/docker.png" />
-        </ListItemIcon>
-        <ListItemText primary="Build docker" />
-      </ListItem>
-
-      <Stack direction="row" spacing={1}>
-        <Stack sx={{ flex: 1 }}>
-          <TextField
-            label="Tag name"
-            placeholder="Enter tag name for the image"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.code === "Enter") {
-                send();
-              }
-            }}
-          />
-        </Stack>
-        <IconButton color="primary" sx={{ alignSelf: "center" }} onClick={send}>
-          <CheckIcon />
-        </IconButton>
-        <IconButton color="warning" onClick={close}>
-          <CloseIcon />
-        </IconButton>
-      </Stack>
-    </Stack>
+    <TextField
+      label="Name"
+      placeholder="Virtual env name"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
   );
 }
 
-function NodeInstall() {
+CreatePythonVirtualEnv.title = TerminalHelper.CREATE_PYTHON_VENV;
+CreatePythonVirtualEnv.icon = <AvatarIcon src="/python.jpg" />;
+
+function PipInstall({ onDone }: Props) {
+  const [value, setValue] = useState("");
+
+  const send = useCallback(() => {
+    onDone(`pip install ${value}`);
+  }, [onDone, value]);
+
   return (
-    <ListItemButton sx={{ borderRadius: 2 }}>
-      <ListItemIcon>
-        <Avatar src="/nodejs.jpg" sx={{ width: 30, height: 30 }} />
-      </ListItemIcon>
-      <ListItemText primary="Node Install (npm, yarn, pnpm)" />
-    </ListItemButton>
+    <TextField
+      label="Name"
+      placeholder="Package name"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
   );
 }
+
+PipInstall.title = TerminalHelper.PIP_INSTALL;
+PipInstall.icon = <AvatarIcon src="/python.jpg" />;
+
+function GetAndExecuteBashScript({ onDone }: Props) {
+  return <TextField />;
+}
+
+GetAndExecuteBashScript.title = TerminalHelper.GET_AND_EXECUTE_BASH;
+GetAndExecuteBashScript.icon = <DownloadIcon />;
+
+function DockerBuild({ onDone }: Props) {
+  const [value, setValue] = useState("");
+
+  const send = useCallback(() => {
+    onDone(`docker build -t ${value} .`);
+  }, [onDone, value]);
+
+  return (
+    <TextField
+      label="Tag name"
+      placeholder="Enter tag name for the image"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
+  );
+}
+
+DockerBuild.title = TerminalHelper.DOCKER_BUILD;
+DockerBuild.icon = <AvatarIcon src="/docker.png" />;
+
+function AptInstall({ onDone }: Props) {
+  const [value, setValue] = useState("");
+
+  const send = useCallback(() => {
+    onDone!(`pkexec apt-get install ${value}`);
+  }, [onDone, value]);
+
+  return (
+    <TextField
+      label="Package"
+      placeholder="Enter package"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
+  );
+}
+
+AptInstall.title = TerminalHelper.APT_GET;
+AptInstall.icon = <AvatarIcon src="/apt.png" />;
+
+function NpmInstall({ onDone }: Props) {
+  const [value, setValue] = useState("");
+
+  const send = useCallback(() => {
+    onDone!(`npm install ${value}`);
+  }, [onDone, value]);
+
+  return (
+    <TextField
+      label="Dependencies"
+      placeholder="Enter dependencies"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          send();
+        }
+      }}
+      InputProps={{
+        endAdornment: <Apply send={send} />,
+      }}
+    />
+  );
+}
+
+NpmInstall.title = TerminalHelper.NPM_INSTALL;
+NpmInstall.icon = <AvatarIcon src="/npm-2.svg" />
+
+const helpers = [
+  AptInstall,
+  CloneGitHubRepo,
+  CreatePythonVirtualEnv,
+  DockerBuild,
+  GetAndExecuteBashScript,
+  NpmInstall,
+  PipInstall,
+];
 
 export default function Terminal({
   onChange,
@@ -176,13 +261,10 @@ export default function Terminal({
   const ref = useRef<any>();
   const [openMenu, setOpenMenu] = useState(false);
   const [value, setValue] = useState("");
-  const [selected, setSelected] = useState<TerminalHelper | null>(null);
-
-  const props = {
-    save: (text: string) => {
-      setValue((value) => `${value}${text}\n`);
-    },
-    close: () => setSelected(null),
+  const [selected, setSelected] = useState(-1);
+  const onDone = (text: string) => {
+    setValue((value) => `${value}${text}\n`);
+    setSelected(-1);
   };
 
   useEffect(() => {
@@ -197,27 +279,20 @@ export default function Terminal({
         onClose={() => setOpenMenu(false)}
       >
         <List disablePadding>
-          <CloneGitHub
-            inList
-            open={() => {
-              setSelected(TerminalHelper.CLONE_GIT_HUB);
-              setOpenMenu(false);
-            }}
-          />
-          <DockerBuild
-            inList
-            open={() => {
-              setSelected(TerminalHelper.DOCKER_BUILD);
-              setOpenMenu(false);
-            }}
-          />
-          <GetAndExecuteBashScript
-            inList
-            open={() => {
-              setSelected(TerminalHelper.GET_AND_EXECUTE_BASH);
-              setOpenMenu(false);
-            }}
-          />
+          {helpers.map((Helper, index) => (
+            <ListItemText key={index}>
+              <ListItemButton
+                sx={{ borderRadius: 2 }}
+                onClick={() => {
+                  setSelected(index);
+                  setOpenMenu(false);
+                }}
+              >
+                <ListItemIcon>{Helper.icon}</ListItemIcon>
+                <ListItemText primary={Helper.title} />
+              </ListItemButton>
+            </ListItemText>
+          ))}
         </List>
       </Menu>
 
@@ -231,12 +306,26 @@ export default function Terminal({
         </IconButton>
       </ListItem>
 
-      {selected === TerminalHelper.CLONE_GIT_HUB && (
-        <CloneGitHub inList={false} {...props} />
-      )}
+      {selected > -1 && (
+        <Stack>
+          <ListItem>
+            <ListItemIcon>{helpers[selected].icon}</ListItemIcon>
+            <ListItemText primary={helpers[selected].title} />
+          </ListItem>
 
-      {selected === TerminalHelper.DOCKER_BUILD && (
-        <DockerBuild inList={false} {...props} />
+          <Stack direction="row" spacing={1}>
+            <Stack sx={{ flex: 1 }}>
+              <Render onDone={onDone} Component={helpers[selected]} />
+            </Stack>
+            <IconButton
+              color="warning"
+              sx={{ alignSelf: "center" }}
+              onClick={close}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
       )}
 
       <TextField

@@ -4,7 +4,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableBody from "@mui/material/TableBody";
 import { useEffect, useState } from "react";
 import { orderBy } from "lodash";
-import { useHandlers, useSearch, useServices } from "@/stores/stores";
+import { useHandlers, useSearch, useServices, useShowSearch } from "@/stores/stores";
 import AddDialog from "@/components/AddDialog";
 import ServicesHead from "@/components/ServicesHead";
 import EmptyServices from "@/components/EmptyServices";
@@ -13,11 +13,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Service from "@/components/Service";
 import Typography from "@mui/material/Typography";
 import LogsDialog from "@/components/LogsDialog";
+import Button from "@mui/material/Button";
 
 export default function Home() {
   const liveServices = useServices((state) => state.list);
   const replaceLiveServices = useServices((state) => state.replace);
   const search = useSearch((state) => state.value);
+  const clearSearch = useSearch((state) => state.replace);
+  const searchIsVisible = useShowSearch((state) => state.value);
 
   const setHandlers = useHandlers((state) => state.replace);
 
@@ -43,7 +46,7 @@ export default function Home() {
 
   let services = liveServices;
 
-  if (search) {
+  if (search && searchIsVisible) {
     services = services.filter((services) =>
       services.name.toLowerCase().includes(search.toLowerCase())
     );
@@ -57,8 +60,8 @@ export default function Home() {
 
   return (
     <>
-      <TableContainer>
-        <Table>
+      <TableContainer sx={{maxHeight: '100dvh'}}>
+        <Table stickyHeader>
           <ServicesHead />
 
           <TableBody>
@@ -82,8 +85,12 @@ export default function Home() {
       {services.length === 0 && !loading && !search && <EmptyServices />}
 
       {services.length === 0 && search && !loading && (
-        <Stack sx={{ flex: 1 }} justifyContent="center" alignItems="center">
-          <Typography variant="h4">No services match your search</Typography>
+        <Stack sx={{ flex: 1 }} justifyContent="center" alignItems="center" spacing={4}>
+          <Typography variant="h4">No services match your search {'"'}{search}{'"'}</Typography>
+
+          <Button onClick={() => {
+            clearSearch('')
+          }} variant="outlined">Clear search</Button>
         </Stack>
       )}
     </>

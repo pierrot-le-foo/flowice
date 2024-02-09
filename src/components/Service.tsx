@@ -5,22 +5,27 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArticleIcon from "@mui/icons-material/Article";
+import FolderIcon from '@mui/icons-material/Folder';
 import PauseIcon from "@mui/icons-material/Pause";
 import StopIcon from "@mui/icons-material/Stop";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
-import { useFilterByStatus, useFilterByType, useSelectedLogServiceId } from "@/stores/stores";
+import {
+  useFilterByStatus,
+  useFilterByType,
+  useSelectedLogServiceId,
+} from "@/stores/stores";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import HideSourceIcon from "@mui/icons-material/HideSource";
 import ServiceMenu from "./ServiceMenu";
-import WifiIcon from '@mui/icons-material/Wifi';
-import WifiOffIcon from '@mui/icons-material/WifiOff';
-import SignalWifiStatusbarNullIcon from '@mui/icons-material/SignalWifiStatusbarNull';
+import WifiIcon from "@mui/icons-material/Wifi";
+import WifiOffIcon from "@mui/icons-material/WifiOff";
+import SignalWifiStatusbarNullIcon from "@mui/icons-material/SignalWifiStatusbarNull";
+import Collapse from "@mui/material/Collapse";
+import Logs from "./Logs";
+import TerminalIcon from '@mui/icons-material/Terminal';
 
 export interface ServiceProps {
   service: IService;
@@ -35,6 +40,7 @@ export default function Service({ service }: ServiceProps) {
   const selectedFilters = useFilterByStatus((state) => state.list);
   const selectedTypes = useFilterByType((state) => state.list);
   const [openMenu, setOpenMenu] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
 
   const [deleted, setDeleted] = useState(false);
   const setLogs = useSelectedLogServiceId((state) => state.replace);
@@ -104,6 +110,7 @@ export default function Service({ service }: ServiceProps) {
     return null;
   }
 
+
   return (
     <>
       <TableRow key={service.id}>
@@ -119,6 +126,7 @@ export default function Service({ service }: ServiceProps) {
           >
             {service.name}
           </Alert> */}
+          {service.id}
           <Button
             fullWidth
             color={getStatusColor(status)}
@@ -133,6 +141,9 @@ export default function Service({ service }: ServiceProps) {
                 <SignalWifiStatusbarNullIcon htmlColor="white" />
               )
             }
+            onClick={() => {
+              fetch(`/api/services/${service.id}/open`);
+            }}
           >
             {service.name}
           </Button>
@@ -186,8 +197,16 @@ export default function Service({ service }: ServiceProps) {
             </IconButton>
           )}
 
-          <IconButton color="info" onClick={() => setLogs(service.id)}>
+          <IconButton color="info" onClick={() => setShowLogs((s) => !s)}>
             <ArticleIcon />
+          </IconButton>
+
+          <IconButton>
+            <FolderIcon />
+          </IconButton>
+
+          <IconButton>
+            <TerminalIcon />
           </IconButton>
 
           <IconButton
@@ -200,6 +219,15 @@ export default function Service({ service }: ServiceProps) {
           </IconButton>
         </TableCell>
       </TableRow>
+
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={showLogs} mountOnEnter>
+            <Logs serviceId={service.id} />
+          </Collapse>
+        </TableCell>
+      </TableRow>
+
       <ServiceMenu
         anchorEl={ref.current}
         open={openMenu}

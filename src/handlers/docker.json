@@ -40,6 +40,53 @@
         "description": "A list of port bindings (localPort:containerPort)"
       },
       {
+        "key": "env",
+        "name": "Environment variables",
+        "type": {
+          "name": "text",
+          "list": true,
+          "regularExpression": {
+            "expression": "^[a-zA-Z_]+=.+$",
+            "flags": ["i"]
+          }
+        },
+        "required": false,
+        "description": "A list of environment variables (ENV=value)"
+      },
+      {
+        "key": "volumes",
+        "name": "Volumes",
+        "type": {
+          "name": "text",
+          "list": true,
+          "regularExpression": {
+            "expression": "^.+:.+$",
+            "flags": ["i"]
+          }
+        },
+        "required": false,
+        "description": "A list of volumes (local-path:container-path)"
+      },
+      {
+        "key": "restart",
+        "name": "Restart",
+        "type": {
+          "name": "options",
+          "options": [
+            {
+              "key": "always",
+              "name": "Always"
+            },
+            {
+              "key": "unless-stopped",
+              "name": "Unless stopped"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Restart strategy"
+      },
+      {
         "key": "detached",
         "name": "Detach container",
         "type": {

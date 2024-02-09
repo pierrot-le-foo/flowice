@@ -1,5 +1,19 @@
 import { useState } from "react";
 
+export function useString(defaultValue = "") {
+  const [state, setState] = useState(defaultValue);
+
+  const replace = (next: string) => {
+    setState(next);
+  };
+
+  const change = (e: any) => {
+    setState(e.target.value.toString());
+  };
+
+  return { state, replace, change };
+}
+
 export function useList<T>(defaultValue: T[] = []) {
   const [items, setItems] = useState(defaultValue);
 

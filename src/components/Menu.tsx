@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import RssFeedIcon from "@mui/icons-material/RssFeed";
 import { usePathname, useRouter } from "next/navigation";
 import AddIcon from "@mui/icons-material/Add";
+import ArticleIcon from "@mui/icons-material/Article";
 
 export default function Menu() {
   const router = useRouter();
@@ -40,6 +41,13 @@ export default function Menu() {
         color={pathname.startsWith("/add") ? "success" : "inherit"}
       >
         <AddIcon />
+      </IconButton>
+
+      <IconButton
+        onClick={goTo("/logs")}
+        color={pathname.startsWith("/logs") ? "success" : "inherit"}
+      >
+        <ArticleIcon />
       </IconButton>
 
       <IconButton onClick={goTo("/")}>

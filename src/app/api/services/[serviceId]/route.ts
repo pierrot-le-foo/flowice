@@ -26,7 +26,6 @@ export async function DELETE(_request: Request, options: Options) {
 export async function PUT(request: Request, options: Options) {
   const id = options.params.serviceId;
   const service = await request.json();
-  console.log(service);
   await writeFile(
     path.join(process.env.HOME!, ".flowice/services", `${id}.json`),
     JSON.stringify(service)

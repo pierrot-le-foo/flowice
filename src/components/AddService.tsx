@@ -108,6 +108,14 @@ export default function AddService({ id }: AddServiceProps) {
       color: string;
     }[] = [];
 
+    nextVariables.push({
+      source: "general",
+      name: "id",
+      description: "Service id",
+      value: id,
+      color: "darksalmon",
+    });
+
     if (name) {
       nextVariables.push({
         source: "general",
@@ -306,9 +314,18 @@ export default function AddService({ id }: AddServiceProps) {
       },
       body: JSON.stringify(compile(variablesArrayToObject(variables), install)),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Request failed')
+        }
+        return res.json()
+      })
       .then((result) => {
         setInstallResult(result);
+        setInstalling(false);
+      })
+      .catch(error => {
+        console.log(error)
         setInstalling(false);
       });
   }, [install, id]);
@@ -714,7 +731,7 @@ export default function AddService({ id }: AddServiceProps) {
         </Stack>
       </Stack>
 
-      <Dialog open={showVariables} onClose={() => setShowVariables(false)}>
+      <Dialog open={showVariables} onClose={() => setShowVariables(false)} fullWidth maxWidth="xl">
         <DialogTitle>Variables</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>

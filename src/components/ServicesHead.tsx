@@ -34,10 +34,27 @@ export default function ServicesHead() {
   const handlers = useHandlers((state) => state.list);
 
   useEffect(() => {
-    if (!searchIsVisible) {
-      resetSearch("");
-    }
-  }, [searchIsVisible]);
+    const handler = (e) => {
+      if (e.code === "KeyS") {
+        if (!document.querySelector("#search-flowice:focus")) {
+          toggleSearch();
+          setTimeout(() => {
+            document.getElementById("search-flowice")!.focus()
+          }, 500)
+        }
+      }
+    };
+    document.addEventListener("keyup", handler);
+    return () => {
+      document.removeEventListener("keyup", handler);
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   if (!searchIsVisible) {
+  //     resetSearch("");
+  //   }
+  // }, [searchIsVisible]);
 
   useEffect(() => {
     if (!filtersAreVisible) {
@@ -51,7 +68,7 @@ export default function ServicesHead() {
       <TableRow>
         <TableCell style={{ width: 60 }}></TableCell>
         <TableCell>Service</TableCell>
-        <TableCell style={{ width: 200 }}>Type</TableCell>
+        <TableCell style={{ width: 200 }}>Handler</TableCell>
         <TableCell style={{ width: 150 }}>Category</TableCell>
         <TableCell align="right" style={{ width: 260 }}>
           <IconButton onClick={toggleSearch}>

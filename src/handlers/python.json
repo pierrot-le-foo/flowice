@@ -8,13 +8,114 @@
   "wrapper": {
     "inputs": [
       {
-        "key": "start",
-        "name": "Start command",
+        "key": "virtualEnvironment",
+        "name": "Use virtual environemnt",
         "type": {
-          "name": "text"
+          "name": "options",
+          "options": [
+            {
+              "key": "anaconda",
+              "name": "Anaconda",
+              "description": "Anaconda"
+            },
+            {
+              "key": "mincodna",
+              "name": "Miniconda",
+              "description": "Miniconda"
+            },
+            {
+              "key": "poetry",
+              "name": "Poetry",
+              "description": "Poetry"
+            },
+            {
+              "key": "venv",
+              "name": "Virtual Env (venv)",
+              "description": "Virtual Env",
+              "default": true
+            },
+            {
+              "key": "none",
+              "name": "No virtual env",
+              "description": "Do not use virtual env"
+            }
+          ]
         },
         "required": true,
-        "description": "The start command"
+        "description": "Use virtual environemnt"
+      },
+      {
+        "key": "envName",
+        "name": "Virtual Environment name",
+        "description": "Virtual Environment name",
+        "if": "typeof handler !== 'undefined' && handler.virtualEnvironment === 'venv'",
+        "type": {
+          "name": "text"
+        }
+      },
+      {
+        "key": "type",
+        "name": "Service type",
+        "type": {
+          "name": "options",
+          "options": [
+            {
+              "key": "module",
+              "name": "Module",
+              "description": "Module",
+              "default": true
+            },
+            {
+              "key": "package",
+              "name": "Package",
+              "description": "Package"
+            },
+            {
+              "key": "script",
+              "name": "Script file",
+              "description": "Script file"
+            }
+          ]
+        },
+        "required": true,
+        "description": "Use virtual environemnt"
+      },
+      {
+        "key": "package",
+        "name": "Package name",
+        "description": "Package name",
+        "if": "typeof handler !== 'undefined' && handler.type === 'package'",
+        "type": {
+          "name": "text"
+        }
+      },
+      {
+        "key": "script",
+        "name": "Script file",
+        "description": "Script file",
+        "if": "typeof handler !== 'undefined' && handler.type === 'script'",
+        "type": {
+          "name": "text"
+        }
+      },
+      {
+        "key": "directory",
+        "name": "Working directory",
+        "description": "Working directory",
+        "type": {
+          "name": "text",
+          "default": {
+            "command": "echo $HOME/.flowice/services/{{ general.id }}"
+          }
+        }
+      },
+      {
+        "key": "arguments",
+        "name": "Arguments",
+        "description": "Arguments",
+        "type": {
+          "name": "text"
+        }
       }
     ]
   },

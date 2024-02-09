@@ -137,8 +137,12 @@ export function formatInputs(
 
 export function compile(variables: Record<string, any>, from: string) {
   templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-  const compiled = template(from);
-  return compiled(variables);
+  const compiler = template(from);
+  let compiled = compiler(variables);
+  while (/\{\{.+\}\}/.test(compiled)) {
+    compiled = compile(variables, compiled)
+  }
+  return compiled
 }
 
 export function variablesArrayToObject(

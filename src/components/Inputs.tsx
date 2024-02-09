@@ -54,6 +54,10 @@ export function InputList<T>({
   const { items, updateByIndex, push, removeByIndex, moveUp, moveDown } =
     useList<T>();
 
+  useEffect(() => {
+    onChange(items)
+  }, [items])
+
   return (
     <Stack>
       <Stack p={3} spacing={2} divider={<Divider orientation="horizontal" />}>

@@ -1,0 +1,14 @@
+git clone https://github.com/microsoft/BotFramework-Composer .
+cp docker-compose.override.yml.example docker-compose.override.yml
+sed -i -e 's|/Some/path/to/my/bots|{{ handler.directory }}|g' docker-compose.override.yml
+pip install yq
+yq -y 'del(.services.botruntime)' docker-compose.override.yml > docker-compose.override2.yml
+rm docker-compose.override.yml
+mv docker-compose.override2.yml docker-compose.override.yml
+yq -y 'del(.services.composer.ports)' docker-compose.yml > docker-compose2.yml
+rm docker-compose.yml
+mv docker-compose2.yml docker-compose.yml
+echo '    ports:' >> docker-compose.override.yml
+echo '      - "{{ category.port }}:3000"' >> docker-compose.override.yml
+echo '      - "3979-5000:3979-5000"' >> docker-compose.override.yml
+echo '    container_name: {{ handler.container_name || 'ms-bot-framework-compose' }}' >> docker-compose.override.yml
